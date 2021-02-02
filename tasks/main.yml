@@ -35,6 +35,25 @@
     path: /etc/kubernetes/admin.conf
   register: kubernetes_init_stat
 
+- name: Get Kubernetes bootstrap token.
+  command: kubeadm token generate
+  register: kubernetes_bootstrap_token_command
+  when: kubernetes_role == 'master'
+
+- name: Get Kubernetes certificate key.
+  command: kubeadm certs certificate-key
+  register: kubernetes_init_certificate_key_command
+  when: kubernetes_role == 'master'
+
+- name: Set the bootstrap token and certificate globally
+  set_fact:
+    kubernetes_bootstrap_token: "{{ kubernetes_bootstrap_token_command.stdout }}"
+    kubernetes_init_certificate_key: "{{ kubernetes_init_certificate_key_command.stdout }}"
+  when: kubernetes_bootstrap_token_command.stdout is defined
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  with_items: "{{ groups['all'] }}"
+
 # Set up master.
 - include_tasks: master-setup.yml
   when: kubernetes_role == 'master'
@@ -56,9 +75,16 @@
   delegate_facts: true
   with_items: "{{ groups['all'] }}"
 
-- include_tasks: node-setup.yml
-  when: kubernetes_role == 'node'
+- name: Debug Kubernetes join command
+  debug:
+    var: kubernetes_join_command
 
 - name: Pause for 5 minutes while Kubernetes initializes core services
   pause:
       minutes: 5
+
+- include_tasks: master-join.yml
+  when: kubernetes_role == 'controlplanenode'
+
+- include_tasks: node-setup.yml
+  when: kubernetes_role == 'node'
