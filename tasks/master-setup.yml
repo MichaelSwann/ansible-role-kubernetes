@@ -5,10 +5,6 @@
     state: directory
     mode: 0755
 
-- name: Get Kubernetes bootstrap token.
-  command: kubeadm token generate
-  register: kubernetes_bootstrap_token
-
 - name: Add Kubernetes kube controller manager extra options override file.
   template:
     src: kubeadm-config.j2
@@ -22,6 +18,7 @@
   command: >
     kubeadm init
     --config ~/.kube/kubeadm-config.yml
+    --upload-certs
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
   register: kubeadmin_init
   when: not kubernetes_init_stat.stat.exists
@@ -29,7 +26,6 @@
 - name: Print the init output to screen.
   debug:
     var: kubeadmin_init.stdout
-    verbosity: 2
   when: not kubernetes_init_stat.stat.exists
 
 - name: Symlink the kubectl admin.conf to ~/.kube/conf.
