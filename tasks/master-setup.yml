@@ -100,3 +100,8 @@
   when:
     - kubernetes_enable_web_ui | bool
     - kubernetes_dashboard_service is failed
+
+- name: Patch the kubelet configmap, add maxPods configuration item.
+  shell: "kubectl -nkube-system get configmaps kubelet-config-1.20 -o=json | jq '{apiVersion: (.apiVersion), kind: (.kind), metadata: {namespace: (.metadata.namespace), name: (.metadata.name)} ,  data: {kubelet: (.data.kubelet + \"maxPods: 500\n\")}}'  | kubectl apply -f -"
+  when: not kubernetes_init_stat.stat.exists
+
