@@ -40,7 +40,6 @@ kubernetes_service_network:
 kubernetes_cri_socket: '/var/run/docker.sock'
 # containerd - '/run/containerd/containerd.sock'
 
-kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
 kubernetes_ignore_preflight_errors: 'all'
 

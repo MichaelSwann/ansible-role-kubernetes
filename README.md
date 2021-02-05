@@ -75,11 +75,8 @@ This role currently supports `flannel` (default), `calico` or `weave` for cluste
 
 The role makes use of a kubeadmn configuration file and you can specify network range you wish to use for service ip addresses.
 
-    kubernetes_apiserver_advertise_address: ''
     kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
     kubernetes_ignore_preflight_errors: 'all'
-
-Options passed to `kubeadm init` when initializing the Kubernetes master. The `kubernetes_apiserver_advertise_address` defaults to `ansible_default_ipv4.address` if it's left empty.
 
     kubernetes_apt_release_channel: main
     kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
