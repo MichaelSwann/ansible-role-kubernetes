@@ -11,13 +11,15 @@ kubernetes_packages:
   - name: jq
     state: present
 
-kubernetes_version: '1.19'
-kubernetes_version_rhel_package: '1.19.0'
-kubernetes_kubeadm_version: 'v1.19.0'
+kubernetes_version: '1.20'
+kubernetes_version_rhel_package: '1.20.0'
+kubernetes_kubeadm_version: 'v1.20.0'
 
 kubernetes_role: master
 kubernetes_cluster_name: mycluster
 kubernetes_api_server_endpoint: '192.168.60.11:6443'
+kubernetes_max_pods: 110
+kubernetes_kube_controller_manager_node_cidr_mask_size: 24
 kubernetes_kubelet_extra_args: ""
 kubernetes_kubeadm_init_extra_opts: ""
 kubernetes_join_command_extra_opts: ""
@@ -61,5 +63,3 @@ kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flann
 # Calico config files
 kubernetes_calico_manifest_file: https://docs.projectcalico.org/v3.17/manifests/calico.yaml
 
-# Kubeadm config extras
-kubernetes_kube_controller_manager_node_cidr_mask_size: 24
